@@ -24,25 +24,15 @@ import numpy
 import subprocess
 
 
-# args.infile="/shared/Singleton_Boost_PJ/singleton_score/VBI/VBI_1_ALL.singletons.bed"
-# args.gen_seq="/shared/Singleton_Boost_PJ/ref_data/gencode.v29lift37.1.annotation_GENES.bed"
-# args.cds_seq="/shared/Singleton_Boost_PJ/ref_data/gencode.v29lift37.1.annotation_CDS.bed"
-# args.outfile="/shared/Singleton_Boost_PJ/singleton_score/VBI/SING_SCORE.1.txt"
-
-
 def main(args):
 
-    # sing_f = gzip.open(args.infile) if args.infile.endswith('.gz') else open(args.infile)
     gene_f = gzip.open(args.gen_seq) if args.gen_seq.endswith('.gz') else open(args.gen_seq)
     cds_f = gzip.open(args.cds_seq) if args.cds_seq.endswith('.gz') else open(args.cds_seq)
-    # gnomad_f = gzip.open(args.gnomad_seq) if args.gnomad_seq.endswith('.bgz') else open(args.gnomad_seq)
-    # o_tab = gzip.open(args.outfile, 'w') if args.outfile.endswith('.gz') else open(args.outfile,'w')
 
     #generate the intersection using bedtools as in the shell script for genes and cds
     cmd_gene = 'bedtools intersect -a ' + args.infile +' -b '+ args.gen_seq + ' -wo | cut -f 10 | sort | uniq -c| awk \'{OFS="\\t"}{print $1,$2,$3}\''
     cmd_cds = 'bedtools intersect -a ' + args.infile +' -b '+ args.cds_seq + ' -wo | cut -f 10,12 | sort | uniq -c| awk \'{OFS="\\t"}{print $1,$2,$3}\''
 
-    # n_s_tot=subprocess.run(cmd_1,stdout=subprocess.PIPE,shell=True)
     n_s_tot=subprocess.run(cmd_gene,stdout=subprocess.PIPE,shell=True).stdout.decode('utf-8').split("\n")
     cds_s_tot=subprocess.run(cmd_cds,stdout=subprocess.PIPE,shell=True).stdout.decode('utf-8').split("\n")
 
@@ -54,7 +44,6 @@ def main(args):
             gene_id=s_count_g[1].split(".")[0]
             s_count=s_count_g[0]
             n_s_tot_list[gene_id].append(int(s_count))
-            # n_s_tot_list[gene_id]=[gene_name], int(s_count)]
 
     cds_s_tot_list=collections.defaultdict(lambda: collections.defaultdict(list))
     for s_count_cds in cds_s_tot:
@@ -67,12 +56,6 @@ def main(args):
 
     #calculate gene length and create a dictionary
     gene_list={gene.strip().split("\t")[4].split(".")[0]:[gene.strip().split("\t")[3],int(gene.strip().split("\t")[2])-int(gene.strip().split("\t")[1])+1] for gene in gene_f }
-    # gene_list={}
-    # for gene in gene_f:
-    #     gene=gene.strip().split("\t")
-    #     gene_id=gene[4]
-    #     gene_length=int(gene[2])-int(gene[1])+1
-    #     gene_list[gene_id]=gene_length
 
     #now we need the same for each CDS, but we need a dictionary with gene_id AND transcript id, for the size of each cds region and for the total cds size for each transcript
     cds_list=collections.defaultdict(lambda: collections.defaultdict(list))
@@ -90,7 +73,6 @@ def main(args):
         gw_s_density=float(args.s_sing_num)/float(args.genome_length)
 
         # In this case, we want to generate two separate files 
-        # gnomad_f = gzip.open(args.gnomad_seq) if args.gnomad_seq.endswith('.bgz') else open(args.gnomad_seq)
         gene_f_out=args.outfile + "_GENE"
         cds_f_out=args.outfile + "_CDS"
         gene_out = gzip.open(gene_f_out, 'w') if gene_f_out.endswith('.gz') else open(gene_f_out,'w')
@@ -136,7 +118,6 @@ def main(args):
 
     else :
 
-        # gnomad_f = gzip.open(args.gnomad_seq) if args.gnomad_seq.endswith('.bgz') else open(args.gnomad_seq)
         o_tab = gzip.open(args.outfile, 'w') if args.outfile.endswith('.gz') else open(args.outfile,'w')
 
         #Last step is to generate the report going through all genes and transcripts and CDS
@@ -164,7 +145,6 @@ def main(args):
                 splitted_line=[gene,g_length[0],count_s_gene,g_length[1],g_s_density,transcript,curr_transcript_s_count,sum(t_length),cds_s_density]
                 # print(splitted_line)
                 print('%s' %("\t".join(list(map(str,splitted_line)))), file=o_tab)
-                # print >> o_tab, '%s' %("\t".join(list(map(str,splitted_line))))
 
         gene_f.close()
         cds_f.close()

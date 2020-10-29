@@ -4,25 +4,18 @@
 ###############################################
 #23/04/2018
 #
-#Pipeline script for the variants prioritization project
-#v 0.1
+#Wrapper script for singletons scores calculation
+# v0.1
 ###############################################
 
 # Pipeline workflow:
 
-# TajimaD stats
-# Het stats
-# ROH stats
 # Singleton density
-# IHS
-# CADD score distribution   
 
-# Each by chromosome
-# Each can run in parallel
 
-#define a function to generate bed files with region boundaries
+#TODO:define a function to generate bed files with region boundaries
 #need to find the updated coordinates for each chr, since the absolute dist
-base_bash_scripts="/home/cocca/scripts/bash_scripts"
+base_bash_scripts=$0
 ######################
 # ARGS:
 # $1 is reserved for pipeline options
@@ -32,17 +25,25 @@ chr=$2
 win_size=$3 
 out_folder=$4
 pop_vcf=$5
-m=$6
-q=$7
-#we need to account for a sample list,and for a bed file containing genes 
+genome_build=$6
+m=$7
+q=$8
+#we need to account for a sample list,and for a bed file containing genes
 #The list will be an INCLUSION list, with a single column of samples's ids to include in the analyses
-sample_list=$8
+sample_list=$9
 #this bed file is useless, most of the times, we need to check if it's still usefull to have this option
-genes_bed=$9
+genes_bed=${10}
 # pipe_step=$7
 # STEP 1: create a bed file for each chromosome to work with regions in parallel
 # a) retrieve updated chromosome coordinates
-chrom=(`mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A -B --skip-column-names -e "select chrom, 0, size as coords  from hg19.chromInfo where chrom = 'chr${chr}';"`)
+case ${genome_build} in
+    GRCh37 )
+        chrom=(`mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A -B --skip-column-names -e "select chrom, 0, size as coords  from hg19.chromInfo where chrom = 'chr${chr}';"`)
+        ;;
+    GRCh38 )
+        chrom=(`mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A -B --skip-column-names -e "select chrom, 0, size as coords  from hg38.chromInfo where chrom = 'chr${chr}';"`)
+        ;;
+esac
 # mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A -B --skip-column-names -e "select chrom, 0, size as coords  from hg19.chromInfo where chrom NOT LIKE 'chr___%' and chrom NOT LIKE 'chrUn_%' order by chrom;"
 
 start=${chrom[1]}
@@ -59,7 +60,7 @@ mkdir -p ${gene_stats_folder}
 
 
 # echo "${@}"
-while getopts ":THRSIC" opt; do
+while getopts ":THRSICh" opt; do
     case ${opt} in
     S)
         ${base_bash_scripts}/generic_chunk_generator.sh ${chunk_mode} ${start}-${end} ${win_size} ${chr} ${chunk_outfile}
@@ -90,6 +91,25 @@ while getopts ":THRSIC" opt; do
         echo "intersect the provided genes list with our stats..."
         echo "bedtools intersect -a ${genes_bed} -b ${singletons_out}/${chr}.ALL.singletons.bed -wo > ${gene_stats_folder}/${chr}.genes_singletons.bed" | qsub -o ${singletons_logs}/chr${chr}_\$JOB_ID_bed_intersect.log -e ${singletons_logs}/chr${chr}_\$JOB_ID_bed_intersect.e -V -N singletons_bed_intersect_chr${chr} -hold_jid singletons_concat_chr${chr} -l h_vmem=2G -q ${q}
         fi
+    ;;
+    h)
+    echo "Script usage:"
+    echo "VPP_GR2018_pipeline.sh [workflow option] [arguments] "
+    echo "workflow options:"
+    echo "                 -S: singletons workflow "
+    echo ""
+    echo "arguments: "
+    echo "In this preliminary version of the code, all arguments are positional:"
+    echo -e "$2 : chromosome \n
+         $3 : window size (in bp)  \n
+         $4 : output folder \n
+         $5 : vcf file \n
+         $6 : genome_build \n
+         $7 : memory requirement for job submission \n
+         $8 : queue for job submission \n
+         $9 : sample INCLUSION list, with a single column of samples's ids to include in the analyses \n
+         $10 : bed file containing genes [mostly deprecated] \n
+        "
     ;;
     
 esac

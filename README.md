@@ -9,17 +9,22 @@ Mezzavilla M, Cocca M, Guidolin F, Gasparini P. A population-based approach for 
 
 # DISCLAIMER
 
-This is the very first version of the pipeline, meant to be shared quickly while we work on a more polished and portable Snakemake version.
+**This is the very first version of the pipeline, meant to be shared quickly while we work on a more polished and portable Snakemake version.**
 
 There are some hard coded parameters you should modify if you plan to run the scripts on a cluster not based on the SGE queue system:
 	
 * in the folder there is a ja_runner_par.sh script to be used on LSB cluster: you can use this script to modify the job array submission syntax in the VPP_GR2018_pipeline.sh script (lines 78 and 82)
 * you should modify job submission syntax according to your cluster on lines 86 and 91 in VPP_GR2018_pipeline.sh
 
+In case you need any help, please drop a line to:
+
+* massimiliano.cocca [at] burlo [dot] trieste [dot] .it : code related issues
+* massimo.mezzavilla [at] burlo [dot] trieste [dot] .it : method related issues
 
 ---
 ## Requirements
 
++ mysql (to retrieve information from genome-mysql.cse.ucsc.edu)
 + Python <= 3.6
 + bedtools
 + vcftools
@@ -88,7 +93,6 @@ do
     cut -f 1,5 ${outfolder}/gencode.v${gencode_v}.${chr}.annotation_GENES.bed > ${outfolder}/gencode.v${gencode_v}.${chr}.GENES.bed
     awk -v c=${chr} '$1=="chr"c' ${cds_uniq} > ${outfolder}/gencode.v${gencode_v}.${chr}.annotation_CDS.bed
 done
-done
 ```
 
 
@@ -97,7 +101,7 @@ done
 ```bash
 
 pop="TEST_POP"
-
+genome_build="GRCh38"
 for chr in {1..22} X
 do
 win_size=50000
@@ -108,9 +112,8 @@ pop_vcf=[base-population-folder]/${pop}/${chr}.vcf.gz
 m=5G #memory requiremente for job submission on a queue system
 q="fast" #queue to submit the job
 
-/home/cocca/scripts/bash_scripts/VPP_GR2018_pipeline.sh -S ${chr} ${win_size} ${out_folder} ${pop_vcf} ${m} ${q}
+[your-script-folder]/VPP_GR2018_pipeline.sh -S ${chr} ${win_size} ${out_folder} ${pop_vcf} ${genome_build} ${m} ${q}
 
-done
 done
 
 ```
@@ -133,13 +136,11 @@ log_folder=${out_path}/logs
 
 job_name=s_score_${pop}_${chr}
 #the code is actually written to run on an SGE cluster, but can be modified to run on all sort of clusters
-qu="fast,all.q"
+qu="fast"
 
 mkdir -p ${log_folder}
 
-echo "~/scripts/bash_scripts/singletons_score.sh ${ref_seq} ${cds_uniq} ${sing_file} ${outfile} POP"|qsub -o ${log_folder}/\$JOB_ID_${pop}_${chr}.log -e ${log_folder}/\$JOB_ID_${pop}_${chr}.e -V -N ${job_name} -l h_vmem=4G -q ${qu}
+echo "[your-script-folder]/singletons_score.sh ${ref_seq} ${cds_uniq} ${sing_file} ${outfile} POP"|qsub -o ${log_folder}/\$JOB_ID_${pop}_${chr}.log -e ${log_folder}/\$JOB_ID_${pop}_${chr}.e -V -N ${job_name} -l h_vmem=4G -q ${qu}
 
-done
-done
 done
 ```

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #script to calculate singleton density based in coding and non coding regions
-
+base_script_folder=$0
 ref_seq=$1
 cds_uniq=$2
 # sing_file=/shared/Singleton_Boost_PJ/singleton_score/VBI/VBI_${chr}_ALL.singletons
@@ -22,10 +22,10 @@ source activate py36
 
 case ${s_mode} in
 	POP )
-		${MY_BASH_SCRIPTS}/singletons_score.py --sing ${sing_file}.bed --gen_seq ${ref_seq} --cds_seq ${cds_uniq} --out ${outfile}
+		${base_script_folder}/singletons_score.py --sing ${sing_file}.bed --gen_seq ${ref_seq} --cds_seq ${cds_uniq} --out ${outfile}
 
 		#Add final singleton scores calculation
-		Rscript --no-save --verbose ${MY_BASH_SCRIPTS}/Function_singleton_calculation.r ${outfile} ${outfile}.scores
+		Rscript --no-save --verbose ${base_script_folder}/Function_singleton_calculation.r ${outfile} ${outfile}.scores
 
 	;;
 	SAMPLE )
