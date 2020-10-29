@@ -87,14 +87,6 @@ while getopts ":dstqlc" opt; do
       echo "Error in script running"
     ;;
   esac
-  #bit to generate a report....
-  # PID=$!
-  # wait $!
-  # status=$?
-  # wdir=`pwd -P`
-  # cmd=`history | tail -n2| head -1| cut -f 2- -d " "`
-  # email=mc14@sanger.ac.uk
-  # /nfs/users/nfs_m/mc14/Work/bash_scripts/send_report.sh ${status} ${email} ${wdir} ${cmd}
 
 done
 

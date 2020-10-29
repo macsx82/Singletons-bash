@@ -70,22 +70,5 @@ while getopts ":dstql" opt; do
       echo $opt
     ;;
   esac
-  #bit to generate a report....
-  # PID=$!
-  # wait $!
-  # status=$?
-  # wdir=`pwd -P`
-  # cmd=`history | tail -n2| head -1| cut -f 2- -d " "`
-  # email=mc14@sanger.ac.uk
-  # /nfs/users/nfs_m/mc14/Work/bash_scripts/send_report.sh ${status} ${email} ${wdir} ${cmd}
 
 done
-#bash $script ${file} $3 $4 $5 $6 $7 $8
-
-#06/06/2014
-#order inverted ONLY FOR consequence list file splitting
-# $script $3 $4 ${file} $5 $6 $7 $8
-# /software/vertres/codebase/scripts/bamcheck -c 1,50,1 -d /lustre/scratch113/projects/fvg_seq/F12HPCEUHK0358_HUMpngR/BRIDGED_BAMS/${file}
-# zcat ${file} | sed 's/,rs/|rs/g' | awk -v chr=${LSB_JOBINDEX} '{ snp=(NF-5)/3; if($2 ~/^rs/) s=$2;else s="NA"; printf "chr"chr":"$3"-"s"-"$4"-"$5"," $4 "," $5; for(i=1; i<=snp; i++) printf "," $(i*3+3)*2+$(i*3+4); printf "\n" }' > chr${LSB_JOBINDEX}.bimbam
-
-
