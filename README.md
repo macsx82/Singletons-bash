@@ -16,10 +16,11 @@ There are some hard coded parameters you should modify if you plan to run the sc
 * in the folder there is a ja_runner_par.sh script to be used on LSB cluster: you can use this script to modify the job array submission syntax in the VPP_GR2018_pipeline.sh script (lines 78 and 82)
 * you should modify job submission syntax according to your cluster on lines 86 and 91 in VPP_GR2018_pipeline.sh
 
-In case you need any help, please drop a line to:
+***In case you need any help, for code related problems, please open an issue in the repository or drop a line to:***
+* ***massimiliano [dot] cocca [at] burlo [dot] trieste [dot] .it ***
 
-* massimiliano.cocca [at] burlo [dot] trieste [dot] .it : code related issues
-* massimo.mezzavilla [at] burlo [dot] trieste [dot] .it : method related issues
+***In case you need any help, for method related issues, please drop a line to:***
+* ***massimo [dot] mezzavilla [at] burlo [dot] trieste [dot] .it ***
 
 ---
 ## Requirements
