@@ -12,8 +12,8 @@ This is the very first version of the pipeline, meant to be shared quickly while
 
 There are some hard coded parameters you should modify if you plan to run the scripts on a cluster not based on the SGE queue system.
 	
-	* in the folder there is a ja_runner_par.sh script to be used on LSB cluster: you can use this script to modify the job array submission syntax in the VPP_GR2018_pipeline.sh script (lines 78 and 82)
-	* you should modify job submission syntax according to your cluster on lines 86 and 91 in VPP_GR2018_pipeline.sh
+* in the folder there is a ja_runner_par.sh script to be used on LSB cluster: you can use this script to modify the job array submission syntax in the VPP_GR2018_pipeline.sh script (lines 78 and 82)
+* you should modify job submission syntax according to your cluster on lines 86 and 91 in VPP_GR2018_pipeline.sh
 
 
 ---
