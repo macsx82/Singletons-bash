@@ -21,23 +21,14 @@ end=$3
 infile=$4
 outfolder=$5
 sample_list=$6
-#window=$6
 #window size is defined in the interval provided
 # window=$[end - start]
 # window=1000000000
 #read a whole bed file
 
-# chr=17
-# start=46350927
-# end=46400927
-# win_size=50000
-# outfolder=/home/cocca/analyses/VPP_GR2018/15052018_test1/${chr}
-# infile=/home/cocca/analyses/paperONE/supp_data/pop_subset/03012018/VBI/${chr}.vcf.gz
 
 #read a single region
-# echo "vcftools --gzvcf ${infile} --chr ${chr} --from-bp ${start} --to-bp ${end} --TajimaD ${window} --out ${outfolder}/${chr}.${start}-${end}"
-# vcftools --gzvcf ${infile} --chr ${chr} --from-bp ${start} --to-bp ${end} --min-alleles 2 --max-alleles 2 --singletons --out ${outfolder}/${chr}.${start}-${end}
-#we need to cher the correct name for the chromosome
+#we need to check the correct name for the chromosome
 chr_name=$(bcftools view -H ${infile}| head -1 | cut -f 1 )
 
 #we need to check if we provided a sample list for the inclusion of samples in the analisis
@@ -60,7 +51,6 @@ line_num=`wc -l ${outfolder}/${chr}.${start}-${end}.singletons | cut -f 1 -d " "
 if [[ ${line_num} -eq 1 ]];then
 #we have an empty region file, but we still want to know that there is nothing there, so we need to build a file with something in
 # CHROM START END N_SING N_SITES SING_RATE W_size SING_RATE_by_W_size"
-    # winsize=`echo "${end} - ${start}" | bc`
     winsize=$(echo "${start} ${end}" | awk '{print $2-$1}')
     echo "${chr} ${start} ${end} 0 0 NA ${winsize} NA"> ${outfolder}/${chr}.${start}-${end}.singletons_stats
 else

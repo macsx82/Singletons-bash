@@ -17,26 +17,6 @@ out_path=$4
 
 while getopts ":THRSIC" opt; do
     case ${opt} in
-    T)
-        # stats concat step
-        (echo "CHROM START END N_SITES TD";cat ${file_path}/${chr}.*.Tajima_stats | sort -g -k3,3 -k2,2)| tr " " "\t" > ${out_path}/${chr}.ALL.TajimaD
-        # we also need a BED formatted version for overlapping purposes (without header)
-        (cat ${file_path}/${chr}.*.Tajima_stats | sort -g -k3,3 -k2,2)| tr " " "\t" > ${out_path}/${chr}.ALL.TajimaD.bed
-        
-    ;;
-    H)
-
-        # concat Het stats
-        (echo "CHROM START END TOT_HET N_SITES MEAN_HET MEAN_HET_RATIO";cat ${file_path}/${chr}.*.het_stats | sort -g -k3,3 -k2,2)| tr " " "\t" > ${out_path}/${chr}.ALL.HET
-        # we also need a BED formatted version for overlapping purposes (without header)
-        (cat ${file_path}/${chr}.*.het_stats | sort -g -k3,3 -k2,2)| tr " " "\t" > ${out_path}/${chr}.ALL.HET.bed
-
-    ;;
-    R)
-
-        # STEP 4: ROH stats
-
-    ;;
     S)
         # concat Singletons output
         (echo -e "CHROM\tPOS\tSINGLETON/DOUBLETON\tALLELE\tINDV";cat ${file_path}/${chr}.*-*.singletons | sort -g -k2,2| fgrep -v "ALLELE")| tr " " "\t" > ${out_path}/${chr}.ALL.samples.singletons
@@ -52,20 +32,6 @@ while getopts ":THRSIC" opt; do
         #clean single region data
         rm ${file_path}/${chr}.*.singletons_stats
         rm ${file_path}/${chr}.*-*.singletons
-    ;;
-    I)
-        # concat IHS stats: 
-        (echo "CHROM START END N_SITES AVG_IHS AVG_SD_IHS";cat ${file_path}/${chr}.*.win_IHS_stats | sort -g -k3,3 -k2,2)| tr " " "\t" > ${out_path}/${chr}.ALL.IHS
-        # we also need a BED formatted version for overlapping purposes (without header)
-        (cat ${file_path}/${chr}.*.win_IHS_stats | sort -g -k3,3 -k2,2)| tr " " "\t" > ${out_path}/${chr}.ALL.IHS.bed
-
-    ;;
-    C)
-        # concat CADD
-        (echo "CHROM START END BIN_0_10 BIN_10_20 BIN_20 N_CADD_ANN N_TOT_WIN";cat ${file_path}/${chr}.*.CADD_win_stats | sort -g -k3,3 -k2,2)| tr " " "\t" > ${out_path}/${chr}.ALL.CADD
-        # we also need a BED formatted version for overlapping purposes (without header)
-        (cat ${file_path}/${chr}.*.CADD_win_stats | sort -g -k3,3 -k2,2)| tr " " "\t" > ${out_path}/${chr}.ALL.CADD.bed
-
     ;;
 esac
 done

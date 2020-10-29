@@ -29,32 +29,7 @@ case ${s_mode} in
 
 	;;
 	SAMPLE )
-		# here we need to extract data for each sample, so we need to cicle throug the singleton bed file and generate a singleton file for each sample
-		# Than we can run the score calculation code for each sample and generate a file for each sample and than a summary collecting all data for all samples
-		# This is intended to be run by gene
-		genome_legth=$6 #Genome length for genome wide singleton density calculation
-		# genome_legth=3095677412
-		samples=$(cut -f 5 ${sing_file}.bed | sort | uniq )
-
-		#generate a bed file for each sample and run the singleton score calculation
-		for sample in ${samples}
-		do
-			outpath=$(dirname ${outfile})
-			s_sing_file_name=$(basename ${sing_file})
-			fgrep -w ${sample} ${sing_file}.bed > ${outpath}/${s_sing_file_name}_${sample}.bed
-
-			#get GW singleton number fot the current sample
-			s_sing_num=$(wc -l ${outpath}/${s_sing_file_name}_${sample}.bed| cut -f 1 -d " ")
-
-
-			${MY_BASH_SCRIPTS}/singletons_score.py --sample --sample_id ${sample} --genome_length ${genome_legth} --s_sing_num ${s_sing_num} --sing ${outpath}/${s_sing_file_name}_${sample}.bed --gen_seq ${ref_seq} --cds_seq ${cds_uniq} --out ${outfile}_${sample}.txt
-			#before cleanup, I want the singleton density for that sample, but genome wide
-			#So we need to extract the singleton number from ALL chromosomes
-
-			# clean up after score generation
-			rm ${outpath}/${s_sing_file_name}_${sample}.bed
-		done
-		
+		#WORK IN PROGRESS
 	;;
 	*)
 		echo "Accepted options for s_mode parameter are POP (to calculate population wide stats) or SAMPLE (to calculate sample levels stats"
