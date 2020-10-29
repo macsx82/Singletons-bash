@@ -17,10 +17,11 @@ There are some hard coded parameters you should modify if you plan to run the sc
 * you should modify job submission syntax according to your cluster on lines 86 and 91 in VPP_GR2018_pipeline.sh
 
 ***In case you need any help, for code related problems, please open an issue in the repository or drop a line to:***
-* ***massimiliano [dot] cocca [at] burlo [dot] trieste [dot] .it ***
++ ***massimiliano [dot] cocca [at] burlo [dot] trieste [dot] .it***
+
 
 ***In case you need any help, for method related issues, please drop a line to:***
-* ***massimo [dot] mezzavilla [at] burlo [dot] trieste [dot] .it ***
++ ***massimo [dot] mezzavilla [at] burlo [dot] trieste [dot] .it***
 
 ---
 ## Requirements
