@@ -15,7 +15,7 @@
 
 #TODO:define a function to generate bed files with region boundaries
 #need to find the updated coordinates for each chr, since the absolute dist
-base_bash_scripts=$0
+base_bash_scripts=$(dirname $0)
 ######################
 # ARGS:
 # $1 is reserved for pipeline options

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 #script to calculate singleton density based in coding and non coding regions
-base_script_folder=$0
+base_script_folder=$(dirname $0)
 ref_seq=$1
 cds_uniq=$2
 # sing_file=/shared/Singleton_Boost_PJ/singleton_score/VBI/VBI_${chr}_ALL.singletons
