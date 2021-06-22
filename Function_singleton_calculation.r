@@ -79,12 +79,6 @@ args <- commandArgs(trailing=TRUE)
 singleton_table <- args[[1]]
 out_file <- args[[2]]
 
-# singleton_table <- "/home/cocca/analyses/qgp-tov-burlo/paper_data/SINGLETONS/pathway_density/FVG/20200916_3/ENSG00000134824/output/FVG_SING_SCORE_by_sample_ENSG00000134824"
-# out_file <- "/home/cocca/analyses/qgp-tov-burlo/paper_data/SINGLETONS/pathway_density/FVG/20200916_3/ENSG00000134824/output/FVG_SING_SCORE_by_sample_ENSG00000134824.scores"
-
-# singleton_table <- "/home/cocca/analyses/qgp-tov-burlo/paper_data/SINGLETONS/pathway_density/FVG/20200916_3/ENSG00000141448/output/FVG_SING_SCORE_by_sample_ENSG00000141448"
-# out_file <- "/home/cocca/analyses/qgp-tov-burlo/paper_data/SINGLETONS/pathway_density/FVG/20200916_3/ENSG00000141448/output/FVG_SING_SCORE_by_sample_ENSG00000141448.scores"
-
 # singleton_table <- "mysingleton_data.txt"
 
 a=read.table(singleton_table, h=T)
@@ -96,8 +90,8 @@ Y=(a$GENE_LENGTH-a$TRANSCRIPT_LENGTH)
 SC_ncds=NTRF(X~Y)
 SC_cds=NTRF(a$SING_TRANSCRIPT~ a$TRANSCRIPT_LENGTH)
 Atot3=data.frame(a[,1:9], SC_cds, SC_ncds)
-DSC_score=((Atot3$SC_cds-min(Atot3$SC_cds))-(Atot3$SC_ncds-min(Atot3$SC_ncds)))
-SSC_score=((Atot3$SC_cds-min(Atot3$SC_cds))+(Atot3$SC_ncds-min(Atot3$SC_ncds)))
+DSC_score=rowDiffs(as.matrix(data.frame(Atot3$SC_ncds, Atot3$SC_cds)))
+SSC_score=rowSums(data.frame(Atot3$SC_cds, Atot3$SC_ncds))
 Atot4=data.frame(Atot3,DSC_score,SSC_score)
 
 #write output file
