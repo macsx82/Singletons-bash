@@ -10,7 +10,7 @@
 
 
 #endif /* Function_singleton_calculation_Mezza_h */
-
+library('matrixStats')
 
 
 ZTRF<-function (formula, data, family = gaussian){
