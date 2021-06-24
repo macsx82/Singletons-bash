@@ -44,12 +44,10 @@ case ${genome_build} in
         chrom=(`mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A -B --skip-column-names -e "select chrom, 0, size as coords  from hg38.chromInfo where chrom = 'chr${chr}';"`)
         ;;
 esac
-# mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A -B --skip-column-names -e "select chrom, 0, size as coords  from hg19.chromInfo where chrom NOT LIKE 'chr___%' and chrom NOT LIKE 'chrUn_%' order by chrom;"
 
 start=${chrom[1]}
 end=${chrom[2]}
 
-#chunk_outfile=${outfolder}/${pop}_${chr}_10.chunks
 chunk_mode="range"
 
 chunk_outfile="${out_folder}/${chr}_chunk_file.txt"
@@ -60,7 +58,8 @@ mkdir -p ${gene_stats_folder}
 
 
 # echo "${@}"
-while getopts ":THRSICh" opt; do
+# We use getopts so we can include other options in the pipeline, if needed
+while getopts ":Sh" opt; do
     case ${opt} in
     S)
         ${base_bash_scripts}/generic_chunk_generator.sh ${chunk_mode} ${start}-${end} ${win_size} ${chr} ${chunk_outfile}
