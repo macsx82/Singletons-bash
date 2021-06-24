@@ -31,33 +31,33 @@ sample_list=$6
 chr_name=$(bcftools view -H ${infile}| head -1 | cut -f 1 )
 
 #we need to check if we provided a sample list for the inclusion of samples in the analisis
-if [[ ${sample_list} != "" ]]; then
-	echo " You provided the following sample list: ${sample_list}. "
-	#We will apply a QUAL>=30 filter to be more stringent in case of false positives
-	bcftools view -S ${sample_list} -r ${chr_name}:${start}-${end} -i"AC==1 && FILTER=='PASS' && QUAL>=30" -m2 -M2 ${infile} | vcftools --vcf - --chr ${chr_name} --singletons --out ${outfolder}/${chr}.${start}-${end}
-	#when we calculate the site number, we need to filter by quality and keep only PASS sites as well
-	nsites=`bcftools view -S ${sample_list} -i"FILTER=='PASS' && QUAL>=30" -H -r ${chr_name}:${start}-${end} -m2 -M2 ${infile} | wc -l | cut -f 1 -d " "`
-else
-	echo "No samples list provided."
-	#We will apply a QUAL>=30 filter to be more stringent in case of false positives
-	bcftools view -r ${chr_name}:${start}-${end} -i"AC==1 && FILTER=='PASS' && QUAL>=30" -m2 -M2 ${infile} | vcftools --vcf - --chr ${chr_name} --singletons --out ${outfolder}/${chr}.${start}-${end}
-	#when we calculate the site number, we need to filter by quality and keep only PASS sites as well
-	nsites=`bcftools view -H -i"FILTER=='PASS' && QUAL>=30" -r ${chr_name}:${start}-${end} -m2 -M2 ${infile} | wc -l | cut -f 1 -d " "`
-fi
-##this bit of code is only used to work on new TGP 3k data, since the QUAL field is set to "."
 # if [[ ${sample_list} != "" ]]; then
 # 	echo " You provided the following sample list: ${sample_list}. "
 # 	#We will apply a QUAL>=30 filter to be more stringent in case of false positives
-# 	bcftools view -S ${sample_list} -r ${chr_name}:${start}-${end} -i "AC==1 && FILTER=='PASS'" -m2 -M2 ${infile} | vcftools --vcf - --chr ${chr_name} --singletons --out ${outfolder}/${chr}.${start}-${end}
+# 	bcftools view -S ${sample_list} -r ${chr_name}:${start}-${end} -i"AC==1 && FILTER=='PASS' && QUAL>=30" -m2 -M2 ${infile} | vcftools --vcf - --chr ${chr_name} --singletons --out ${outfolder}/${chr}.${start}-${end}
 # 	#when we calculate the site number, we need to filter by quality and keep only PASS sites as well
-# 	nsites=`bcftools view -S ${sample_list} -i "FILTER=='PASS'" -H -r ${chr_name}:${start}-${end} -m2 -M2 ${infile} | wc -l | cut -f 1 -d " "`
+# 	nsites=`bcftools view -S ${sample_list} -i"FILTER=='PASS' && QUAL>=30" -H -r ${chr_name}:${start}-${end} -m2 -M2 ${infile} | wc -l | cut -f 1 -d " "`
 # else
 # 	echo "No samples list provided."
 # 	#We will apply a QUAL>=30 filter to be more stringent in case of false positives
-# 	bcftools view -r ${chr_name}:${start}-${end} -i "AC==1 && FILTER=='PASS'" -m2 -M2 ${infile} | vcftools --vcf - --chr ${chr_name} --singletons --out ${outfolder}/${chr}.${start}-${end}
+# 	bcftools view -r ${chr_name}:${start}-${end} -i"AC==1 && FILTER=='PASS' && QUAL>=30" -m2 -M2 ${infile} | vcftools --vcf - --chr ${chr_name} --singletons --out ${outfolder}/${chr}.${start}-${end}
 # 	#when we calculate the site number, we need to filter by quality and keep only PASS sites as well
-# 	nsites=`bcftools view -H -i "FILTER=='PASS'" -r ${chr_name}:${start}-${end} -m2 -M2 ${infile} | wc -l | cut -f 1 -d " "`
+# 	nsites=`bcftools view -H -i"FILTER=='PASS' && QUAL>=30" -r ${chr_name}:${start}-${end} -m2 -M2 ${infile} | wc -l | cut -f 1 -d " "`
 # fi
+##this bit of code is only used to work on new TGP 3k data, since the QUAL field is set to "."
+if [[ ${sample_list} != "" ]]; then
+	echo " You provided the following sample list: ${sample_list}. "
+	#We will apply a QUAL>=30 filter to be more stringent in case of false positives
+	bcftools view -S ${sample_list} -r ${chr_name}:${start}-${end} -i "AC==1 && FILTER=='PASS'" -m2 -M2 ${infile} | vcftools --vcf - --chr ${chr_name} --singletons --out ${outfolder}/${chr}.${start}-${end}
+	#when we calculate the site number, we need to filter by quality and keep only PASS sites as well
+	nsites=`bcftools view -S ${sample_list} -i "FILTER=='PASS'" -H -r ${chr_name}:${start}-${end} -m2 -M2 ${infile} | wc -l | cut -f 1 -d " "`
+else
+	echo "No samples list provided."
+	#We will apply a QUAL>=30 filter to be more stringent in case of false positives
+	bcftools view -r ${chr_name}:${start}-${end} -i "AC==1 && FILTER=='PASS'" -m2 -M2 ${infile} | vcftools --vcf - --chr ${chr_name} --singletons --out ${outfolder}/${chr}.${start}-${end}
+	#when we calculate the site number, we need to filter by quality and keep only PASS sites as well
+	nsites=`bcftools view -H -i "FILTER=='PASS'" -r ${chr_name}:${start}-${end} -m2 -M2 ${infile} | wc -l | cut -f 1 -d " "`
+fi
 
 
 line_num=`wc -l ${outfolder}/${chr}.${start}-${end}.singletons | cut -f 1 -d " "`
