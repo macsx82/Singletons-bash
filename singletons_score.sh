@@ -13,8 +13,8 @@ s_mode=$5 #alternatives to calculate singleton scores: POP to use standard popul
 #if there is  no bed file for the singleton info, we will generate it
 if [[ ! -s ${sing_file}.bed ]]; then
 echo "Generating bed files for singletons..."
-# fgrep -v "INDV" ${sing_file} |awk '{OFS="\t"}{print "chr"$1,$2,$2+length($4),$3,$5}' > ${sing_file}.bed
-fgrep -v "INDV" ${sing_file} |awk '{OFS="\t"}{print "chr"$1,$2-1,$2+length($4)-1,$3,$5}' > ${sing_file}.bed
+# fgrep -v "INDV" ${sing_file} |awk '{OFS="\t"}{print "chr"$1,$2-1,$2+length($4)-1,$3,$5}' > ${sing_file}.bed
+fgrep -v "INDV" ${sing_file} |awk '{OFS="\t"}{print $1,$2-1,$2+length($4)-1,$3,$5}' > ${sing_file}.bed
 fi
 
 #activate python env needed
