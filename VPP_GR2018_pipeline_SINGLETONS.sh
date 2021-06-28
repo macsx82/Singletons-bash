@@ -66,9 +66,9 @@ if [[ ${line_num} -eq 1 ]];then
 #we have an empty region file, but we still want to know that there is nothing there, so we need to build a file with something in
 # CHROM START END N_SING N_SITES SING_RATE W_size SING_RATE_by_W_size"
     winsize=$(echo "${start} ${end}" | awk '{print $2-$1}')
-    echo "${chr} ${start} ${end} 0 0 NA ${winsize} NA"> ${outfolder}/${chr}.${start}-${end}.singletons_stats
+    echo "${chr_name} ${start} ${end} 0 0 NA ${winsize} NA"> ${outfolder}/${chr}.${start}-${end}.singletons_stats
 else
 #we can now filter out all the doubletons and get the number 
-(fgrep -h -v CHROM ${outfolder}/${chr}.${start}-${end}.singletons |awk '$3=="S"'| awk -v chrom=${chr} -v w_s=${start} -v w_e=${end} -v nsites_reg=${nsites} 'BEGIN{n=0}{n++}END{if(nsites_reg != 0 ) print chrom,w_s,w_e,n,nsites_reg,n/nsites_reg,w_e-w_s,n/(w_e-w_s);else print chrom,w_s,w_e,n,nsites_reg,"NA",w_e-w_s,n/(w_e-w_s)}') | tr "\t" " "> ${outfolder}/${chr}.${start}-${end}.singletons_stats
+(fgrep -h -v CHROM ${outfolder}/${chr}.${start}-${end}.singletons |awk '$3=="S"'| awk -v chrom=${chr_name} -v w_s=${start} -v w_e=${end} -v nsites_reg=${nsites} 'BEGIN{n=0}{n++}END{if(nsites_reg != 0 ) print chrom,w_s,w_e,n,nsites_reg,n/nsites_reg,w_e-w_s,n/(w_e-w_s);else print chrom,w_s,w_e,n,nsites_reg,"NA",w_e-w_s,n/(w_e-w_s)}') | tr "\t" " "> ${outfolder}/${chr}.${start}-${end}.singletons_stats
     
 fi
